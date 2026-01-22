@@ -79,6 +79,7 @@ button:hover {
     background: #3a3a66;
 }
 
+/* RESULTS */
 .results-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -118,6 +119,7 @@ button:hover {
     text-align: center;
 }
 
+/* RESPONSIVE */
 @media (max-width: 1000px) {
     .results-row { grid-template-columns: repeat(2, 1fr); }
 }
@@ -131,14 +133,14 @@ button:hover {
 
 <header>
     <h1>Skill to Opportunity Mapper</h1>
-    <p>Smartly maps your skills to real career opportunities</p>
+    <p>Maps technical & non-technical skills to real career paths</p>
 </header>
 
 <div class="container">
 
 <div class="card">
     <h2>Enter Your Skills</h2>
-    <p>Example: html css js smm seo ui ux</p>
+    <p>Example: html css js smm hr communication excel</p>
     <input type="text" id="skillsInput" placeholder="Type skills and press ENTER">
     <button onclick="analyzeSkills()">Analyze Skills</button>
 </div>
@@ -172,42 +174,70 @@ button:hover {
 </div>
 
 <script>
-/* SHORT FORM & ALIAS MAPPING */
+/* ALIAS & SHORT FORMS */
 const skillAliases = {
     js: "javascript",
-    smm: "social media marketing",
     ui: "ui design",
     ux: "ux design",
-    ml: "machine learning",
+    smm: "social media marketing",
+    hr: "human resources",
+    pm: "project management",
     dm: "digital marketing",
     seo: "seo",
-    html: "html",
-    css: "css"
+    ml: "machine learning",
+    excel: "excel",
+    comm: "communication"
 };
 
+/* TECH + NON-TECH ROLES */
 const skillDatabase = {
     "Frontend Developer": {
         skills: ["html", "css", "javascript"],
-        apps: ["Web Apps", "Landing Pages"]
+        apps: ["Websites", "Web Apps"]
     },
     "Full Stack Developer": {
         skills: ["html", "css", "javascript", "api", "database"],
-        apps: ["Web Systems", "SaaS Platforms"]
+        apps: ["SaaS Platforms", "Web Systems"]
     },
     "UI/UX Designer": {
         skills: ["ui design", "ux design", "figma"],
-        apps: ["App Design", "User Experience"]
+        apps: ["App Design", "UX Improvement"]
     },
     "Digital Marketer": {
-        skills: ["seo", "social media marketing", "content"],
+        skills: ["seo", "social media marketing", "content creation"],
         apps: ["Brand Growth", "Lead Generation"]
     },
-    "Data Analyst": {
-        skills: ["excel", "sql", "python"],
-        apps: ["Reports", "Insights"]
+    "Content Writer": {
+        skills: ["copywriting", "content creation", "research"],
+        apps: ["Blogs", "Marketing Content"]
+    },
+    "Social Media Manager": {
+        skills: ["social media marketing", "analytics", "content creation"],
+        apps: ["Instagram Growth", "Engagement"]
+    },
+    "HR Executive": {
+        skills: ["human resources", "communication", "recruitment"],
+        apps: ["Hiring", "Employee Management"]
+    },
+    "Project Manager": {
+        skills: ["project management", "communication", "leadership"],
+        apps: ["Team Coordination", "Project Delivery"]
+    },
+    "Sales Executive": {
+        skills: ["sales", "communication", "lead generation"],
+        apps: ["Client Acquisition", "Revenue Growth"]
+    },
+    "Accountant": {
+        skills: ["accounting", "finance", "excel"],
+        apps: ["Financial Reports", "Budgeting"]
+    },
+    "Customer Support Specialist": {
+        skills: ["customer support", "communication", "problem solving"],
+        apps: ["Customer Satisfaction", "Issue Resolution"]
     }
 };
 
+/* NORMALIZE INPUT */
 function normalizeSkills(input) {
     return input
         .toLowerCase()
@@ -222,17 +252,16 @@ function analyzeSkills() {
     const userSkills = normalizeSkills(input);
 
     let rolesHTML = "", appsHTML = "", missingHTML = "";
-    let matchedCount = 0;
-    let totalCount = 0;
+    let matched = 0, total = 0;
 
     for (let role in skillDatabase) {
         const roleSkills = skillDatabase[role].skills;
-        const matched = roleSkills.filter(s => userSkills.includes(s));
+        const matches = roleSkills.filter(s => userSkills.includes(s));
 
-        totalCount += roleSkills.length;
-        matchedCount += matched.length;
+        total += roleSkills.length;
+        matched += matches.length;
 
-        if (matched.length >= 1) {
+        if (matches.length >= 1) {
             rolesHTML += `<span class="tag">${role}</span>`;
             skillDatabase[role].apps.forEach(app => {
                 appsHTML += `<span class="tag">${app}</span>`;
@@ -246,16 +275,17 @@ function analyzeSkills() {
         });
     }
 
-    let readiness = Math.min(100, Math.round((matchedCount / totalCount) * 100));
+    let readiness = Math.min(100, Math.round((matched / total) * 100));
 
     document.getElementById("roles").innerHTML = rolesHTML || "No matching roles yet";
     document.getElementById("applications").innerHTML = appsHTML || "—";
-    document.getElementById("missingSkills").innerHTML = missingHTML || "Great coverage 🎉";
+    document.getElementById("missingSkills").innerHTML = missingHTML || "You are well-prepared 🎉";
     document.getElementById("score").innerText = readiness + "%";
 
     document.getElementById("results").style.display = "block";
 }
 
+/* ENTER KEY SUPPORT */
 document.getElementById("skillsInput").addEventListener("keydown", e => {
     if (e.key === "Enter") analyzeSkills();
 });
